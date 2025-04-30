@@ -26,7 +26,7 @@ const SortableItem = ({ id, todo, index }: SortableItemProps) => {
       style={style}
       {...attributes}
       {...listeners}
-      className="p-2 bg-white border rounded shadow-sm"
+      className="p-2 bg-background border rounded shadow-sm"
     >
       {index + 1 + ". " + todo.content}
     </div>

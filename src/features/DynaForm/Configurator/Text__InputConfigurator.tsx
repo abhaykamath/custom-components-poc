@@ -6,6 +6,9 @@ import { FieldConfig } from "@/types/formbuilder.types";
 import { Grip, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 
+import { useDraggable } from "@dnd-kit/core";
+import { CSS } from "@dnd-kit/utilities";
+
 interface Text__InputConfiguratorProps {
   fieldObject: FieldConfig;
   removeFieldObject: (id: string) => void;
@@ -23,6 +26,9 @@ export const Text__InputConfigurator = ({
     placeholder: fieldObject.placeholder || "",
     required: fieldObject.required || false,
   });
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+    id: fieldObject.id,
+  });
 
   useEffect(() => {
     updateMasterConfig({
@@ -32,17 +38,31 @@ export const Text__InputConfigurator = ({
     });
   }, [config]);
 
+  const style = transform
+    ? {
+        transform: CSS.Translate.toString(transform),
+      }
+    : undefined;
+
   return (
-    <div className="flex border rounded-md">
-      <div className="p-2 border-r flex flex-col justify-center hover:cursor-grab">
+    <div
+      ref={setNodeRef}
+      {...listeners}
+      {...attributes}
+      style={style}
+      className="w-full flex border rounded-md"
+    >
+      <div className="p-2 bg-background border-r flex flex-col justify-center hover:cursor-grab rounded-tl-md rounded-bl-md">
         <Grip />
       </div>
-      <div>
-        <div className="p-2 border-b text-sm bg-gray-100 flex justify-between items-start">
+      <div className="flex-1 bg-background rounded-tr-md rounded-br-md">
+        <div className="p-2 border-b text-sm bg-background flex justify-between items-start rounded-tr-md">
           <div className="text-md">Text Input - {config.name}</div>
+          {/* Delete a configurator*/}
           <Trash
             stroke="red"
             onClick={() => {
+              console.log('clicked')
               removeFieldObject(fieldObject.id);
             }}
           />

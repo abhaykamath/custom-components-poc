@@ -8,6 +8,8 @@ import {
 import { useCallback, useEffect, useState } from "react";
 import { TTodo } from "../../types/types";
 import SortableItem from "./SortableItem";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 const initialTodos = [
   { id: "todo-1", content: "Clean the shoes" },
@@ -68,12 +70,12 @@ const Component_DnD = () => {
     <div>
       <h3 className="text-xl p-2">Todos</h3>
       <div className="p-2 flex gap-2">
-        <input
+        <Input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
         />
-        <button onClick={handleAddTodo}>Add Todo</button>
+        <Button onClick={handleAddTodo}>Add Todo</Button>
       </div>
 
       <DndContext

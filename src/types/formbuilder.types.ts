@@ -44,6 +44,8 @@ export type FieldConfig = {
 };
 export interface RenderFormProps {
   fieldsMasterConfig: FieldConfig[];
+  lastRemoved: string;
+  resetLastRemoved: () => void;
 }
 export interface InputConfiguratorFactoryProps {
   fieldObject: FieldConfig;

@@ -5,10 +5,19 @@ import InputSelectorTab from "./InputSelectorTab";
 import { produce } from "immer";
 import InputConfiguratorFactory from "./Configurator/InputConfiguratorFactory";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { v4 as uuidv4 } from "uuid";
+
+import { DndContext, closestCenter, DragEndEvent } from "@dnd-kit/core";
+import { restrictToParentElement } from "@dnd-kit/modifiers";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  arrayMove,
+} from "@dnd-kit/sortable";
 
 const initialMasterConfig: FieldConfig[] = [
   {
-    id: "random-id-1",
+    id: uuidv4(),
     type: EInputType.Text,
     label: "",
     name: "random-name-1",
@@ -16,7 +25,7 @@ const initialMasterConfig: FieldConfig[] = [
     required: false,
   },
   {
-    id: "random-id-2",
+    id: uuidv4(),
     type: EInputType.Text,
     label: "",
     name: "random-name-2",
@@ -29,6 +38,7 @@ const Component_DynaForm = () => {
   const [fieldsMasterConfig, setFieldsMasterConfig] =
     useState<FieldConfig[]>(initialMasterConfig);
   const [parent, enableAnimations] = useAutoAnimate();
+  const [lastRemoved, setLastRemoved] = useState<string>("");
 
   const addFieldObject = (newFieldObject: FieldConfig) => {
     setFieldsMasterConfig((fieldsMasterConfig) => [
@@ -38,9 +48,18 @@ const Component_DynaForm = () => {
   };
 
   const removeFieldObject = (id: string) => {
-    setFieldsMasterConfig((fieldsMasterConfig) =>
-      fieldsMasterConfig.filter((fieldObject) => fieldObject.id !== id)
-    );
+    setFieldsMasterConfig((fieldsMasterConfig) => {
+      const removedFieldName = fieldsMasterConfig.find(
+        (fieldObject) => fieldObject.id === id
+      )?.name;
+
+      if (removedFieldName) setLastRemoved(removedFieldName);
+      return fieldsMasterConfig.filter((fieldObject) => fieldObject.id !== id);
+    });
+  };
+
+  const resetLastRemoved = () => {
+    setLastRemoved("");
   };
 
   const updateMasterConfig = (updatedFieldObject: FieldConfig) => {
@@ -57,30 +76,44 @@ const Component_DynaForm = () => {
   };
 
   return (
-    <div className="w-full max-w-3xl m-auto">
-      <header className="mb-2">
-        <h2 className="text-center text-3xl font-extrabold">
-          Dynamic Form Builder
+    <div className="w-full h-dvh flex flex-col">
+      <header className="">
+        <h2 className="p-6 border-b text-center text-3xl font-extrabold">
+          FormForge - A Dynamic Form Builder
         </h2>
       </header>
-      <div>
-        <InputSelectorTab
-          addFieldObject={addFieldObject}
-          fieldCount={fieldsMasterConfig.length + 1}
-        />
-        <div ref={parent} className="flex flex-col">
-          {fieldsMasterConfig.map((fieldObject) => (
-            <InputConfiguratorFactory
-              key={fieldObject.id}
-              fieldObject={fieldObject}
-              inputType={fieldObject.type}
-              removeFieldObject={removeFieldObject}
-              updateMasterConfig={updateMasterConfig}
-            />
-          ))}
-        </div>
-        <RenderForm fieldsMasterConfig={fieldsMasterConfig} />
-      </div>
+      <main className="w-full flex-1 flex">
+        <section className="border-r w-[55%]">
+          <InputSelectorTab
+            addFieldObject={addFieldObject}
+            fieldCount={fieldsMasterConfig.length + 1}
+          />
+          <DndContext
+            collisionDetection={closestCenter}
+            // onDragEnd={handleDragEnd}
+            modifiers={[restrictToParentElement]}
+          >
+            <div ref={parent} className="w-full p-2 flex flex-col gap-2">
+              {fieldsMasterConfig.map((fieldObject) => (
+                <InputConfiguratorFactory
+                  key={fieldObject.id}
+                  fieldObject={fieldObject}
+                  inputType={fieldObject.type}
+                  removeFieldObject={removeFieldObject}
+                  updateMasterConfig={updateMasterConfig}
+                />
+              ))}
+            </div>
+          </DndContext>
+        </section>
+        <section className="flex-1">
+          <RenderForm
+            fieldsMasterConfig={fieldsMasterConfig}
+            lastRemoved={lastRemoved}
+            resetLastRemoved={resetLastRemoved}
+          />
+        </section>
+      </main>
     </div>
   );
 };

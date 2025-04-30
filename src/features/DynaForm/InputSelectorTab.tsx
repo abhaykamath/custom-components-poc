@@ -1,47 +1,6 @@
-// import { Button } from "@/components/ui/button";
-// import { EInputType } from "@/types/formbuilder.types";
-
-// const inputTypes = Object.values(EInputType);
-
-// const InputSelectorTab = ({ fields, updateFields }: any) => {
-//   return (
-//     <div className="p-2 flex justify-center gap-2">
-//       {inputTypes.map((type) => (
-//         <Button
-//           disabled={["radio", "checkbox"].includes(type)}
-//           key={`field-button-${type}`}
-//           variant={"outline"}
-//           className="hover:cursor-pointer"
-//           onClick={() => {
-//             if (type === "text") {
-//               updateFields({
-//                 type: "text",
-//                 label: "your-custom-label",
-//                 name: `text-input-field-${fields.length + 1}`,
-//                 placeholder: "your-custom-placeholder",
-//                 defaultValue: "",
-//                 required: false,
-//                 maxLength: 20,
-//                 minLength: 4,
-//               });
-//             } else
-//               updateFields({
-//                 type: type,
-//                 name: `form-field-${fields.length + 1}`,
-//               });
-//           }}
-//         >
-//           {type}
-//         </Button>
-//       ))}
-//     </div>
-//   );
-// };
-
-// export default InputSelectorTab;
-
 import { Button } from "@/components/ui/button";
 import { EInputType, FieldConfig } from "@/types/formbuilder.types";
+import { v4 as uuidv4 } from "uuid";
 
 interface InputSelectorTabProps {
   addFieldObject: (newFieldObject: FieldConfig) => void;
@@ -54,7 +13,7 @@ const InputSelectorTab = ({
 }: InputSelectorTabProps) => {
   const onAddTextClickHandler = () => {
     addFieldObject({
-      id: `form-field-configurator-${fieldCount}-text`,
+      id: uuidv4(),
       type: EInputType.Text,
       label: "",
       name: `form-field-${fieldCount}-text`,
@@ -65,7 +24,7 @@ const InputSelectorTab = ({
 
   const onAddEmailClickHandler = () => {
     addFieldObject({
-      id: `form-field-configurator-${fieldCount}-email`,
+      id: uuidv4(),
       type: EInputType.Email,
       label: "",
       name: `form-field-${fieldCount}-email`,
@@ -73,9 +32,10 @@ const InputSelectorTab = ({
       required: false,
     });
   };
+
   const onAddPasswordClickHandler = () => {
     addFieldObject({
-      id: `form-field-configurator-${fieldCount}-password`,
+      id: uuidv4(),
       type: EInputType.Password,
       label: "",
       name: `form-field-${fieldCount}-password`,
@@ -85,7 +45,7 @@ const InputSelectorTab = ({
   };
 
   return (
-    <div className="flex justify-end">
+    <div className="p-2 flex gap-2 border-b">
       <Button
         variant={"outline"}
         className="hover:cursor-pointer"

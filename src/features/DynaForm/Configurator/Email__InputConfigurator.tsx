@@ -37,8 +37,8 @@ export const Email__InputConfigurator = ({
       <div className="p-2 border-r flex flex-col justify-center hover:cursor-grab">
         <Grip />
       </div>
-      <div>
-        <div className="p-2 border-b text-sm bg-gray-100 flex justify-between items-start">
+      <div className="flex-1">
+        <div className="p-2 border-b text-sm bg-background flex justify-between items-start rounded-tr-md">
           <div className="text-md">Email Input - {config.name}</div>
           <Trash
             stroke="red"
